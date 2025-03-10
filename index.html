@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kawichchi - Modern Furniture</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #D97706;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .hero-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D97706' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .furniture-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .section-heading::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #D97706;
+            margin: 12px auto 0;
+        }
+        
+        /* Mobile menu styles */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-amber-600">Kawichchi</div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-10">
+                    <a href="#home" class="nav-link font-medium text-gray-700 hover:text-amber-600 transition duration-300">Home</a>
+                    <a href="#products" class="nav-link font-medium text-gray-700 hover:text-amber-600 transition duration-300">Products</a>
+                    <a href="#about" class="nav-link font-medium text-gray-700 hover:text-amber-600 transition duration-300">About</a>
+                    <a href="#contact" class="nav-link font-medium text-gray-700 hover:text-amber-600 transition duration-300">Contact</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-gray-700 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Navigation -->
+    <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 w-64 h-full bg-white shadow-lg z-50 p-4 transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex justify-end">
+            <button id="close-menu" class="text-gray-700 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-4 mt-8">
+            <a href="#home" class="font-medium text-gray-700 hover:text-amber-600 transition duration-300">Home</a>
+            <a href="#products" class="font-medium text-gray-700 hover:text-amber-600 transition duration-300">Products</a>
+            <a href="#about" class="font-medium text-gray-700 hover:text-amber-600 transition duration-300">About</a>
+            <a href="#contact" class="font-medium text-gray-700 hover:text-amber-600 transition duration-300">Contact</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-pattern pt-24 md:pt-32 pb-16 md:pb-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+                        Crafting <span class="text-amber-600">Elegance</span> for Your Home
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Discover our handcrafted furniture pieces that blend modern design with timeless craftsmanship.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#products" class="btn bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-6 rounded-md transition duration-300 text-center">
+                            Explore Collection
+                        </a>
+                        <a href="#contact" class="btn border-2 border-amber-600 text-amber-600 hover:bg-amber-50 font-medium py-3 px-6 rounded-md transition duration-300 text-center">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+                            <path fill="#F59E0B" fill-opacity="0.2" d="M45.7,-52.8C59.1,-44.7,70,-29.9,72.6,-13.8C75.2,2.3,69.5,19.7,60.2,34.1C50.9,48.6,38,60.1,22.8,65.3C7.6,70.5,-9.9,69.5,-25.3,63.2C-40.8,56.9,-54.2,45.4,-62.6,30.2C-71,15,-74.3,-3.9,-68.3,-18.8C-62.4,-33.7,-47.3,-44.6,-32.5,-52.6C-17.7,-60.6,-3.1,-65.8,10.9,-64.8C24.9,-63.8,32.3,-60.8,45.7,-52.8Z" transform="translate(100 100)" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg width="180" height="180" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#D97706" d="M24 4v8h-8v36h-4v4h-4v8h48v-8h-4v-4h-4v-36h-8v-8h-16zm4 4h8v4h-8v-4zm-16 8h4v4h-4v-4zm8 0h4v32h-4v-32zm8 0h16v32h-16v-32zm20 0h4v4h-4v-4zm-32 36h36v4h-36v-4zm4 8h28v4h-28v-4z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mt-16">
+                <div class="scroll-indicator">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="text-center feature-card">
+                    <div class="furniture-icon bg-amber-100">
+                        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Premium Quality</h3>
+                    <p class="text-gray-600">Our furniture is crafted with the finest materials, ensuring durability and longevity.</p>
+                </div>
+                
+                <div class="text-center feature-card">
+                    <div class="furniture-icon bg-amber-100">
+                        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Fast Delivery</h3>
+                    <p class="text-gray-600">We ensure your furniture arrives promptly, with white-glove delivery service.</p>
+                </div>
+                
+                <div class="text-center feature-card">
+                    <div class="furniture-icon bg-amber-100">
+                        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">5-Year Warranty</h3>
+                    <p class="text-gray-600">Each piece comes with our comprehensive warranty for your peace of mind.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-2 section-heading">Our Collection</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Explore our handcrafted furniture pieces designed to elevate your living space.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Product 1 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M8 48h48v4H8zm4-4h4v4h-4zm36 0h4v4h-4zM12 12h40v32H12zm4 4v24h32V16z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Elegance Sofa</h3>
+                            <span class="text-amber-600 font-bold">$1,299</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">A modern sofa with clean lines and premium leather upholstery.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M32 4c-14.4 0-24 4-24 8v40c0 4 9.6 8 24 8s24-4 24-8V12c0-4-9.6-8-24-8zm0 4c12.4 0 20 3.2 20 4s-7.6 4-20 4-20-3.2-20-4 7.6-4 20-4zm20 8v8c0 .8-7.6 4-20 4s-20-3.2-20-4v-8c3.6 2 11.6 4 20 4s16.4-2 20-4zm0 12v8c0 .8-7.6 4-20 4s-20-3.2-20-4v-8c3.6 2 11.6 4 20 4s16.4-2 20-4zm0 12v8c0 .8-7.6 4-20 4s-20-3.2-20-4v-8c3.6 2 11.6 4 20 4s16.4-2 20-4z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Nordic Dining Table</h3>
+                            <span class="text-amber-600 font-bold">$899</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Scandinavian-inspired dining table crafted from solid oak.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M8 56h48v4H8zm6-52v48h4V8h28v44h4V4z"/>
+                            <path fill="#D97706" d="M22 36h20v16H22z"/>
+                            <path fill="#D97706" d="M24 8h16v24H24z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Minimalist Bookshelf</h3>
+                            <span class="text-amber-600 font-bold">$549</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">A sleek bookshelf with an industrial-modern aesthetic.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M8 12h8v44H8zm40 0h8v44h-8zM16 12h32v4H16zm0 36h32v4H16z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Queen Bed Frame</h3>
+                            <span class="text-amber-600 font-bold">$1,199</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">A luxurious bed frame with a padded headboard for maximum comfort.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M4 52h56v8H4zm4-8h48v8H8zm8-16h32v16H16zm8-24h16v24H24z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Modern Coffee Table</h3>
+                            <span class="text-amber-600 font-bold">$449</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">A contemporary coffee table with storage solutions and sleek design.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="p-4 bg-amber-50 h-64 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="w-40 h-40">
+                            <path fill="#D97706" d="M16 16h32v36H16zm0-12v8h32V4zM20 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zM16 56h32v4H16z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Designer Wardrobe</h3>
+                            <span class="text-amber-600 font-bold">$1,499</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">A spacious wardrobe with thoughtful organization and elegant design.</p>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block border-2 border-amber-600 text-amber-600 hover:bg-amber-50 font-medium py-3 px-8 rounded-md transition duration-300">
+                    View All Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-2 section-heading">About Kawichchi</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Learn about our story, our values, and our commitment to quality.</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <h3 class="text-2xl font-semibold mb-4">Our Story</h3>
+                    <p class="text-gray-600 mb-4">
+                        Founded in 2010, Kawichchi began as a small workshop with a big vision: to create furniture that transforms spaces while honoring traditional craftsmanship.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        Our founder, inspired by both Scandinavian minimalism and Japanese precision, set out to create pieces that would stand the test of time – both in durability and design.
+                    </p>
+                    <p class="text-gray-600">
+                        Today, we've grown into a renowned furniture brand with showrooms across the country, but our core values remain unchanged: exceptional quality, sustainable practices, and designs that inspire.
+                    </p>
+                    
+                    <h3 class="text-2xl font-semibold mt-8 mb-4">Our Values</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-amber-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h4 class="font-medium">Craftsmanship</h4>
+                                <p class="text-gray-600">Every piece is meticulously crafted by skilled artisans who take pride in their work.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-amber-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h4 class="font-medium">Sustainability</h4>
+                                <p class="text-gray-600">We use responsibly sourced materials and implement eco-friendly practices in our production.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-amber-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h4 class="font-medium">Innovation</h4>
+                                <p class="text-gray-600">We continuously explore new designs and manufacturing techniques to stay at the forefront of furniture design.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 flex flex-col space-y-8">
+                    <div class="bg-amber-50 rounded-lg p-8">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-10 h-10 text-amber-600 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            <h3 class="text-xl font-semibold">Our Mission</h3>
+                        </div>
+                        <p class="text-gray-600">
+                            To create furniture that transforms spaces into havens of comfort, functionality, and beauty, while maintaining a commitment to sustainable practices and exceptional quality.
+                        </p>
+                    </div>
